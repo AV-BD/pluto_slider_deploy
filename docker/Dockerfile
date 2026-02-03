@@ -27,6 +27,10 @@ RUN mkdir -p $JULIA_PATH && \
 # Create working directories
 RUN mkdir -p /app/data/repos /app/data/index
 
+# Create non-root user for security (before package installation)
+RUN useradd -m -u 1000 pluto && \
+    chown -R pluto:pluto /app
+
 # Set working directory
 WORKDIR /app
 
@@ -34,16 +38,11 @@ WORKDIR /app
 COPY entrypoint.sh /app/entrypoint.sh
 RUN chmod +x /app/entrypoint.sh
 
-# Install Julia packages at build time for faster startup
-# This creates a system-wide Julia environment with required packages
-RUN julia -e 'using Pkg; Pkg.add(["Pluto", "PlutoSliderServer"]); Pkg.precompile()'
-
-# Create non-root user for security
-RUN useradd -m -u 1000 pluto && \
-    chown -R pluto:pluto /app
-
-# Switch to non-root user
+# Switch to non-root user for package installation
 USER pluto
+
+# Install Julia packages as pluto user in global environment
+RUN julia -e 'using Pkg; Pkg.add(["Pluto", "PlutoSliderServer"]); Pkg.precompile()'
 
 # Expose PlutoSliderServer port
 EXPOSE 2345
