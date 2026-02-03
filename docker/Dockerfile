@@ -15,13 +15,13 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Julia 1.9.4 (fixed version for reproducibility)
-ENV JULIA_VERSION=1.9.4
+# Install Julia 1.10.0 (updated version for PlutoSliderServer compatibility)
+ENV JULIA_VERSION=1.10.0
 ENV JULIA_PATH=/usr/local/julia
 ENV PATH=$JULIA_PATH/bin:$PATH
 
 RUN mkdir -p $JULIA_PATH && \
-    curl -sSL "https://julialang-s3.julialang.org/bin/linux/x64/1.9/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" | \
+    curl -sSL "https://julialang-s3.julialang.org/bin/linux/x64/1.10/julia-${JULIA_VERSION}-linux-x86_64.tar.gz" | \
     tar -xz --strip-components=1 -C $JULIA_PATH
 
 # Create working directories
