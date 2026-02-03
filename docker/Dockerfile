@@ -36,14 +36,7 @@ RUN chmod +x /app/entrypoint.sh
 
 # Install Julia packages at build time for faster startup
 # This creates a system-wide Julia environment with required packages
-RUN julia -e '
-    using Pkg;
-    Pkg.add([
-        "Pluto",
-        "PlutoSliderServer"
-    ]);
-    Pkg.precompile();
-'
+RUN julia -e 'using Pkg; Pkg.add(["Pluto", "PlutoSliderServer"]); Pkg.precompile()'
 
 # Create non-root user for security
 RUN useradd -m -u 1000 pluto && \
