@@ -47,8 +47,6 @@ validate_environment() {
 
 # Parse repositories from YAML config
 parse_repos_config() {
-    log_info "Parsing repository configuration..."
-    
     # Simple YAML parser for our specific format
     # Expects repos.yaml format:
     # repositories:
@@ -57,13 +55,17 @@ parse_repos_config() {
     #   - owner: username2  
     #     repo: repo-name2
     
+    # Parse without any logging to avoid contaminating the output
     grep -A 1000 "repositories:" "$REPOS_CONFIG_PATH" | \
     grep -E "^\s*-\s*owner:|^\s*repo:" | \
     sed 's/^\s*-\s*owner:\s*//' | \
     sed 's/^\s*repo:\s*//' | \
     paste - - | \
     while IFS=$'\t' read -r owner repo; do
-        echo "${owner}/${repo}"
+        # Skip empty lines and comments
+        if [[ -n "$owner" && -n "$repo" && ! "$owner" =~ ^# && ! "$repo" =~ ^# ]]; then
+            echo "${owner}/${repo}"
+        fi
     done
 }
 
@@ -115,6 +117,7 @@ sync_repository() {
 # Synchronize all repositories
 sync_repositories() {
     log_info "Starting repository synchronization..."
+    log_info "Parsing repository configuration..."
     
     local repos
     repos=$(parse_repos_config)
@@ -123,6 +126,13 @@ sync_repositories() {
         log_warning "No repositories configured"
         return 0
     fi
+    
+    log_info "Found repositories to sync:"
+    echo "$repos" | while IFS= read -r repo; do
+        if [[ -n "$repo" ]]; then
+            log_info "  - $repo"
+        fi
+    done
     
     while IFS= read -r repo; do
         if [[ -n "$repo" ]]; then
