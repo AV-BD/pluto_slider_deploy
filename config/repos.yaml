@@ -1,0 +1,33 @@
+# Repository Configuration for Pluto Slider Server
+# 
+# This file defines which GitHub repositories contain Pluto notebooks
+# that should be served by PlutoSliderServer.
+#
+# Repository Contract:
+# Each repository MUST contain notebooks in a "notebooks/" subdirectory.
+# Only files matching "notebooks/*.jl" will be indexed and served.
+#
+# Format:
+# repositories:
+#   - owner: <github-username-or-org>
+#     repo: <repository-name>
+#   - owner: <another-owner>
+#     repo: <another-repo>
+
+repositories:
+  # Example repositories (uncomment and modify as needed)
+  
+  # - owner: your-github-username
+  #   repo: my-pluto-notebooks
+  
+  # - owner: your-organization
+  #   repo: data-analysis-notebooks
+  
+  # - owner: someone-else
+  #   repo: shared-notebooks
+
+# Notes:
+# - Repositories can be public or private
+# - GitHub token must have read access to all listed repositories
+# - Changes to this file require container restart to take effect
+# - Repository sync happens on every container start

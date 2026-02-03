@@ -1,0 +1,67 @@
+# Pluto Slider Server Infrastructure
+# Docker Compose configuration for reproducible deployment
+
+version: '3.8'
+
+services:
+  pluto-slider-server:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+    container_name: pluto-slider-server
+    restart: unless-stopped
+    
+    # Environment variables - secrets injected at runtime
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - REPOS_CONFIG_PATH=/app/config/repos.yaml
+      - DATA_DIR=/app/data
+      - REPOS_DIR=/app/data/repos
+      - INDEX_DIR=/app/data/index
+      - SERVER_HOST=0.0.0.0
+      - SERVER_PORT=2345
+    
+    # Port mapping - PlutoSliderServer accessible on host
+    ports:
+      - "2345:2345"
+    
+    # Volume mounts for persistence and configuration
+    volumes:
+      # Configuration file (read-only)
+      - ./config/repos.yaml:/app/config/repos.yaml:ro
+      
+      # Persistent data volume (repositories and index)
+      - pluto-data:/app/data
+    
+    # Health check to ensure service is running
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2345/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+    
+    # Resource limits (adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 512M
+          cpus: '0.25'
+
+# Named volumes for data persistence
+volumes:
+  pluto-data:
+    driver: local
+    # Data persists across container restarts and recreations
+    
+# Networks (using default bridge network)
+networks:
+  default:
+    driver: bridge

@@ -1,0 +1,47 @@
+# Pluto Slider Server Infrastructure - Git Ignore Rules
+
+# Never commit secrets or environment variables
+.env
+*.env
+!.env.example
+
+# Docker volumes and runtime data
+pluto-data/
+data/
+
+# Local development files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+*.log
+
+# Editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker build cache
+.dockerignore
+
+# Julia temporary files
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+.julia/
+
+# Backup files
+*.bak
+*.backup
+*.orig
