@@ -187,15 +187,15 @@ start_server() {
     
     cd "$INDEX_DIR"
     
-    # Start PlutoSliderServer
+    # Start PlutoSliderServer with correct API parameters
     exec julia -e "
         using PlutoSliderServer
         
-        # Start the server
+        # Start the server with updated API
         PlutoSliderServer.run_directory(
             \"$INDEX_DIR\";
-            host=\"$SERVER_HOST\",
-            port=parse(Int, \"$SERVER_PORT\"),
+            SliderServer_host=\"$SERVER_HOST\",
+            SliderServer_port=parse(Int, \"$SERVER_PORT\"),
             show_secrets=false,
             init_with_default_pluto_frontend_environment=true
         )
